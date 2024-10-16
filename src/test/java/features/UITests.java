@@ -60,4 +60,13 @@ public class UITests {
         assertEquals("option2", selectedValue);
     }
 
+//    4. Select Option1 checkbox. Verify if it got checked.
+    @Test
+    public void testCheckbox() {
+        WebElement checkbox1 = driver.findElement(By.id("checkBoxOption1"));
+        checkbox1.click();
+        assertTrue(checkbox1.isSelected(), "Checkbox should be checked");
+    }
+
+
 }
