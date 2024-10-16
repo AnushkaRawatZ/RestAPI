@@ -36,4 +36,17 @@ public class UITests {
         assertTrue(radioButton3.isSelected(), "Radio3 is not selected.");
     }
 
+//    2. Type Ind in the textbox, and select India from the options. Verify if India is populated in textbox.
+    @Test
+    public void testSuggestionClass() throws InterruptedException {
+        WebElement autocompleteTextbox = driver.findElement(By.id("autocomplete"));
+        autocompleteTextbox.sendKeys("Ind");
+        Thread.sleep(2000); // Consider using WebDriverWait instead
+
+        WebElement suggestion = driver.findElement(By.xpath("//div[contains(@class, 'ui-menu-item-wrapper') and text()='India']"));
+        suggestion.click();
+
+        String selectedValue = autocompleteTextbox.getAttribute("value");
+        assertEquals("India", selectedValue);
+    }
 }
