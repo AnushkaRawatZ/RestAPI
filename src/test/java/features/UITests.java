@@ -68,5 +68,31 @@ public class UITests {
         assertTrue(checkbox1.isSelected(), "Checkbox should be checked");
     }
 
+//  6. Switch To Alert Example
+    @Test
+    public void testAlert() throws InterruptedException {
+        WebElement textbox = driver.findElement(By.id("name"));
 
+        //a. Enter your name in textbox
+        textbox.sendKeys("Anushka");
+
+        //b. Click on Alert button and accept the alert
+        WebElement alertButton = driver.findElement(By.id("alertbtn"));
+        alertButton.click();
+
+        wait.until(ExpectedConditions.alertIsPresent());
+        Alert alert1 = driver.switchTo().alert();
+        Thread.sleep(2000);
+        alert1.accept();
+
+        //c. Click on confirm button and cancel the alert
+        textbox.sendKeys("Anushka");
+        WebElement confirmButton = driver.findElement(By.id("confirmbtn"));
+        confirmButton.click();
+
+        wait.until(ExpectedConditions.alertIsPresent());
+        Alert alert2 = driver.switchTo().alert();
+        Thread.sleep(2000);
+        alert2.dismiss();
+    }
 }
