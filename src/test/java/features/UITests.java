@@ -49,4 +49,15 @@ public class UITests {
         String selectedValue = autocompleteTextbox.getAttribute("value");
         assertEquals("India", selectedValue);
     }
+//    3. Select Option2 from dropdown and verify whether Option2 is displayed in Dropdown.
+    @Test
+    public void testDropdown() {
+        WebElement dropdown = driver.findElement(By.xpath("//select"));
+        dropdown.click();
+        WebElement option2 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//option[@value='option2']")));
+        option2.click();
+        String selectedValue = dropdown.getAttribute("value");
+        assertEquals("option2", selectedValue);
+    }
+
 }
