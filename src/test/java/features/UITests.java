@@ -7,9 +7,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import javax.swing.*;
 import java.time.Duration;
 import java.util.List;
 
@@ -95,4 +97,21 @@ public class UITests {
         Thread.sleep(2000);
         alert2.dismiss();
     }
-}
+
+//  7. Write a test to verify if the price of the course 'Master Selenium Automation in simple Python Language' is 35.
+    @Test
+    public void webTable() {
+        var table = driver.findElement(By.xpath("//table[@name='courses']"));
+        var rows = table.findElements(By.tagName("tr"));
+
+        String coursePrice = null;
+
+        for (var row : rows) {
+            var cells = row.findElements(By.tagName("td"));
+            if (cells.size() > 0 && "Master Selenium Automation in simple Python Language".equals(cells.get(1).getText())) {
+                coursePrice = cells.get(2).getText(); // Assuming price is in the third column
+                break;
+            }
+        }
+        assertEquals("35", coursePrice, "Expected price to be '35', but got '" + coursePrice + "'");
+    }
