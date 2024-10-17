@@ -29,7 +29,7 @@ public class UITests {
         driver.get("https://www.rahulshettyacademy.com/AutomationPractice/");
     }
 
-//    1. Click on Radio3 button and verify whether it is selected.
+    //    1. Click on Radio3 button and verify whether it is selected.
     @Test
     public void testRadioButton() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -38,7 +38,7 @@ public class UITests {
         assertTrue(radioButton3.isSelected(), "Radio3 is not selected.");
     }
 
-//    2. Type Ind in the textbox, and select India from the options. Verify if India is populated in textbox.
+    //    2. Type Ind in the textbox, and select India from the options. Verify if India is populated in textbox.
     @Test
     public void testSuggestionClass() throws InterruptedException {
         WebElement autocompleteTextbox = driver.findElement(By.id("autocomplete"));
@@ -51,7 +51,8 @@ public class UITests {
         String selectedValue = autocompleteTextbox.getAttribute("value");
         assertEquals("India", selectedValue);
     }
-//    3. Select Option2 from dropdown and verify whether Option2 is displayed in Dropdown.
+
+    //    3. Select Option2 from dropdown and verify whether Option2 is displayed in Dropdown.
     @Test
     public void testDropdown() {
         WebElement dropdown = driver.findElement(By.xpath("//select"));
@@ -62,7 +63,7 @@ public class UITests {
         assertEquals("option2", selectedValue);
     }
 
-//    4. Select Option1 checkbox. Verify if it got checked.
+    //    4. Select Option1 checkbox. Verify if it got checked.
     @Test
     public void testCheckbox() {
         WebElement checkbox1 = driver.findElement(By.id("checkBoxOption1"));
@@ -70,7 +71,7 @@ public class UITests {
         assertTrue(checkbox1.isSelected(), "Checkbox should be checked");
     }
 
-//  6. Switch To Alert Example
+    //  6. Switch To Alert Example
     @Test
     public void testAlert() throws InterruptedException {
         WebElement textbox = driver.findElement(By.id("name"));
@@ -98,7 +99,7 @@ public class UITests {
         alert2.dismiss();
     }
 
-//  7. Write a test to verify if the price of the course 'Master Selenium Automation in simple Python Language' is 35.
+    //  7. Write a test to verify if the price of the course 'Master Selenium Automation in simple Python Language' is 35.
     @Test
     public void webTable() {
         var table = driver.findElement(By.xpath("//table[@name='courses']"));
@@ -115,3 +116,20 @@ public class UITests {
         }
         assertEquals("35", coursePrice, "Expected price to be '35', but got '" + coursePrice + "'");
     }
+
+    //  8. Write a test to sum all the amounts. Verify if the total matches with the 'Total Amount Collected' value.
+    @Test
+    public void totalAmount() {
+        var table = driver.findElement(By.xpath("//div[@class='tableFixHead']/table[@id='product']/tbody"));
+        var rows =table.findElements(By.tagName("tr"));
+        int sum = 0;
+        for(var row:rows) {
+            var cells = row.findElements(By.tagName("td"));
+            sum +=Integer.parseInt(cells.get(3).getText());
+        }
+        String totalS = driver.findElement(By.className("totalAmount")).getText();
+        int total = Integer.parseInt(totalS.replaceAll("[^0-9]", ""));
+        assertEquals(sum, total, "The sum is '"+sum+"' but the total amount is '"+total+"'");
+    }
+
+}
