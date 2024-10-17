@@ -1,5 +1,5 @@
 package features;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
@@ -11,8 +11,8 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import javax.swing.*;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,13 +29,19 @@ public class UITests {
         driver.get("https://www.rahulshettyacademy.com/AutomationPractice/");
     }
 
+    @AfterEach
+    public void teardown() {
+        driver.quit();
+    }
+
     //    1. Click on Radio3 button and verify whether it is selected.
     @Test
-    public void testRadioButton() {
+    public void testRadioButton() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement radioButton3 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='radio3']")));
         radioButton3.click(); // Click directly on the located element
         assertTrue(radioButton3.isSelected(), "Radio3 is not selected.");
+        Thread.sleep(2000);
     }
 
     //    2. Type Ind in the textbox, and select India from the options. Verify if India is populated in textbox.
@@ -50,25 +56,61 @@ public class UITests {
 
         String selectedValue = autocompleteTextbox.getAttribute("value");
         assertEquals("India", selectedValue);
+        Thread.sleep(2000);
     }
 
     //    3. Select Option2 from dropdown and verify whether Option2 is displayed in Dropdown.
     @Test
-    public void testDropdown() {
+    public void testDropdown() throws InterruptedException {
         WebElement dropdown = driver.findElement(By.xpath("//select"));
         dropdown.click();
         WebElement option2 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//option[@value='option2']")));
         option2.click();
         String selectedValue = dropdown.getAttribute("value");
         assertEquals("option2", selectedValue);
+        Thread.sleep(2000);
     }
 
     //    4. Select Option1 checkbox. Verify if it got checked.
     @Test
-    public void testCheckbox() {
+    public void testCheckbox() throws InterruptedException {
         WebElement checkbox1 = driver.findElement(By.id("checkBoxOption1"));
         checkbox1.click();
         assertTrue(checkbox1.isSelected(), "Checkbox should be checked");
+        Thread.sleep(2000);
+    }
+
+//   5. Switch Tab Example
+//a. Click Open Tab button
+//b. Verify whether the following buttons are displayed :
+//i. Home
+//ii. Courses
+//iii. Access All our Courses
+//iv. Learn More
+//v. Apply Now
+//vi. Contact
+//vii. Blog
+//viii. About us
+    @Test
+    public void switchTab() throws InterruptedException {
+        driver.findElement(By.id("opentab")).click();
+
+        List<String> tabs = new ArrayList<>(driver.getWindowHandles());
+        driver.switchTo().window(tabs.get(1));
+
+        //validate the new tab
+        String expectedTitle = "QAClick Academy - A Testing Academy to Learn, Earn and Shine";
+        assertTrue(driver.getTitle().contains(expectedTitle));
+
+        assertTrue(driver.findElement(By.linkText("Home")).isDisplayed());
+        assertTrue(driver.findElement(By.linkText("Courses")).isDisplayed());
+        assertTrue(driver.findElement(By.linkText("Access all our Courses")).isDisplayed());
+        assertTrue(driver.findElement(By.linkText("Learn More")).isDisplayed());
+        assertTrue(driver.findElement(By.xpath("//div[@class='apply-cont apply-color-2']/a")).isDisplayed());
+        assertTrue(driver.findElement(By.xpath("//li[@class='nav-item']/a[text()='Contact']")).isDisplayed());
+        assertTrue(driver.findElement(By.xpath("//li[@class='nav-item']/a[text()='Blog']")).isDisplayed());
+        assertTrue(driver.findElement(By.xpath("//li[@class='nav-item']/a[text()='About us']")).isDisplayed());
+        Thread.sleep(2000);
     }
 
     //  6. Switch To Alert Example
@@ -139,14 +181,12 @@ public class UITests {
         WebElement button = driver.findElement(By.id("mousehover"));
         Actions actions = new Actions(driver);
         actions.moveToElement(button).perform();
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Reload")));
         WebElement reload = driver.findElement(By.linkText("Reload"));
         reload.click();
         String newUrl = driver.getCurrentUrl();
         assertEquals(initialUrl, newUrl, "The page did not reload");
+        Thread.sleep(2000);
     }
-}
-
-
 }
