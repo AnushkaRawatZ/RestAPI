@@ -132,4 +132,21 @@ public class UITests {
         assertEquals(sum, total, "The sum is '"+sum+"' but the total amount is '"+total+"'");
     }
 
+    //  9. Hover the Mouse Hover button (DO NOT CLICK) and select Reload.
+    @Test
+    public void mouseHover() throws InterruptedException {
+        String initialUrl = driver.getCurrentUrl();
+        WebElement button = driver.findElement(By.id("mousehover"));
+        Actions actions = new Actions(driver);
+        actions.moveToElement(button).perform();
+        Thread.sleep(2000);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Reload")));
+        WebElement reload = driver.findElement(By.linkText("Reload"));
+        reload.click();
+        String newUrl = driver.getCurrentUrl();
+        assertEquals(initialUrl, newUrl, "The page did not reload");
+    }
+}
+
+
 }
