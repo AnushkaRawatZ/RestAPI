@@ -20,9 +20,6 @@ Ensure you have the following installed:
   ``` cd <path> ```
 * Install Dependencies
   ``` mvn clean install ```
-* Configure WebDriver
-Update the path to your chromedriver in the test classes:
-```System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver");```
 
 ## Running Tests
 Execute the tests with:
@@ -37,6 +34,8 @@ UITestingSelenium/
 │   ├── misc.xml
 │   ├── uiDesigner.xml
 │   └── vcs.xml
+├── drivers/
+│   └── chromedriver
 ├── src/
 │   └── test/
 │       └── java/
