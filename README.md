@@ -15,7 +15,7 @@ Ensure you have the following installed:
 
 ## Installation and Setup
 * Clone the Repository
-  ``` git clone https://github.com/AnushkaRawatZ/UITestingSelenium.git ```
+  ``` git clone git@github.com:AnushkaRawatZ/UITestingSelenium.git ```
 * Navigate to the Repository
   ``` cd <path> ```
 * Install Dependencies
