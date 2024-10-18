@@ -23,7 +23,7 @@ public class UITests {
 
     @BeforeEach
     public void setup() {
-        System.setProperty("webdriver.chrome.driver", "/Users/raramuri/Downloads/chromedriver-mac-arm64/chromedriver"); // Update the path
+        System.setProperty("webdriver.chrome.driver", "drivers/chromedriver");
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get("https://www.rahulshettyacademy.com/AutomationPractice/");
@@ -181,9 +181,9 @@ public class UITests {
         WebElement button = driver.findElement(By.id("mousehover"));
         Actions actions = new Actions(driver);
         actions.moveToElement(button).perform();
-        Thread.sleep(3000);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Reload")));
         WebElement reload = driver.findElement(By.linkText("Reload"));
+        Thread.sleep(3000);
         reload.click();
         String newUrl = driver.getCurrentUrl();
         assertEquals(initialUrl, newUrl, "The page did not reload");
