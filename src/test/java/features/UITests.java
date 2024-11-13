@@ -17,9 +17,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import pages.*;
+
 public class UITests {
     private WebDriver driver;
     private WebDriverWait wait;
+    PracticePage practicePage;
+    NewTabPage newTabPage;
 
     @BeforeEach
     public void setup() {
@@ -27,6 +31,8 @@ public class UITests {
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get("https://www.rahulshettyacademy.com/AutomationPractice/");
+        practicePage = new PracticePage(driver);
+        newTabPage = new NewTabPage(driver);
     }
 
     @AfterEach
@@ -36,51 +42,33 @@ public class UITests {
 
     //    1. Click on Radio3 button and verify whether it is selected.
     @Test
-    public void testRadioButton() throws InterruptedException {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        WebElement radioButton3 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='radio3']")));
-        radioButton3.click(); // Click directly on the located element
-        assertTrue(radioButton3.isSelected(), "Radio3 is not selected.");
-        Thread.sleep(2000);
+    public void testRadioButton(){
+        practicePage.clickRadioButton3(); // Click directly on the located element
+        assertTrue(practicePage.isRadioButton3Selected(), "Radio3 is not selected.");
     }
 
     //    2. Type Ind in the textbox, and select India from the options. Verify if India is populated in textbox.
     @Test
-    public void testSuggestionClass() throws InterruptedException {
-        WebElement autocompleteTextbox = driver.findElement(By.id("autocomplete"));
-        autocompleteTextbox.sendKeys("Ind");
-        Thread.sleep(2000); // Consider using WebDriverWait instead
-
-        WebElement suggestion = driver.findElement(By.xpath("//div[contains(@class, 'ui-menu-item-wrapper') and text()='India']"));
-        suggestion.click();
-
-        String selectedValue = autocompleteTextbox.getAttribute("value");
-        assertEquals("India", selectedValue);
-        Thread.sleep(2000);
+    public void testSuggestionClass(){
+        practicePage.selectIndiaFromAutocomplete();
+        assertEquals("India", practicePage.getAutocompleteTextValue());
     }
 
     //    3. Select Option2 from dropdown and verify whether Option2 is displayed in Dropdown.
     @Test
-    public void testDropdown() throws InterruptedException {
-        WebElement dropdown = driver.findElement(By.xpath("//select"));
-        dropdown.click();
-        WebElement option2 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//option[@value='option2']")));
-        option2.click();
-        String selectedValue = dropdown.getAttribute("value");
-        assertEquals("option2", selectedValue);
-        Thread.sleep(2000);
+    public void testDropdown(){
+        practicePage.selectOption2FromDropdown();
+        assertEquals("option2", practicePage.getSelectedDropdownValue());
     }
 
     //    4. Select Option1 checkbox. Verify if it got checked.
     @Test
-    public void testCheckbox() throws InterruptedException {
-        WebElement checkbox1 = driver.findElement(By.id("checkBoxOption1"));
-        checkbox1.click();
-        assertTrue(checkbox1.isSelected(), "Checkbox should be checked");
-        Thread.sleep(2000);
+    public void testCheckbox(){
+        practicePage.selectOption1Checkbox();
+        assertTrue(practicePage.isOption1CheckboxSelected(), "Checkbox should be checked");
     }
 
-//   5. Switch Tab Example
+    //   5. Switch Tab Example
 //a. Click Open Tab button
 //b. Verify whether the following buttons are displayed :
 //i. Home
@@ -92,101 +80,47 @@ public class UITests {
 //vii. Blog
 //viii. About us
     @Test
-    public void switchTab() throws InterruptedException {
-        driver.findElement(By.id("opentab")).click();
+    public void switchTab(){
+        practicePage.openNewTab();
 
-        List<String> tabs = new ArrayList<>(driver.getWindowHandles());
-        driver.switchTo().window(tabs.get(1));
+        assertEquals("QAClick Academy - A Testing Academy to Learn, Earn and Shine", practicePage.switchWindowsAndGetTitle());
 
-        //validate the new tab
-        String expectedTitle = "QAClick Academy - A Testing Academy to Learn, Earn and Shine";
-        assertTrue(driver.getTitle().contains(expectedTitle));
-
-        assertTrue(driver.findElement(By.linkText("Home")).isDisplayed());
-        assertTrue(driver.findElement(By.linkText("Courses")).isDisplayed());
-        assertTrue(driver.findElement(By.linkText("Access all our Courses")).isDisplayed());
-        assertTrue(driver.findElement(By.linkText("Learn More")).isDisplayed());
-        assertTrue(driver.findElement(By.xpath("//div[@class='apply-cont apply-color-2']/a")).isDisplayed());
-        assertTrue(driver.findElement(By.xpath("//li[@class='nav-item']/a[text()='Contact']")).isDisplayed());
-        assertTrue(driver.findElement(By.xpath("//li[@class='nav-item']/a[text()='Blog']")).isDisplayed());
-        assertTrue(driver.findElement(By.xpath("//li[@class='nav-item']/a[text()='About us']")).isDisplayed());
-        Thread.sleep(2000);
+        assertTrue(newTabPage.verifyTabButtons());
     }
 
     //  6. Switch To Alert Example
     @Test
-    public void testAlert() throws InterruptedException {
-        WebElement textbox = driver.findElement(By.id("name"));
+    public void testAlert() {
+        practicePage.sendKeystoName();
+        practicePage.handleAlert();
+        assertTrue(practicePage.isAlertHandled());
 
-        //a. Enter your name in textbox
-        textbox.sendKeys("Anushka");
-
-        //b. Click on Alert button and accept the alert
-        WebElement alertButton = driver.findElement(By.id("alertbtn"));
-        alertButton.click();
-
-        wait.until(ExpectedConditions.alertIsPresent());
-        Alert alert1 = driver.switchTo().alert();
-        Thread.sleep(2000);
-        alert1.accept();
-
-        //c. Click on confirm button and cancel the alert
-        textbox.sendKeys("Anushka");
-        WebElement confirmButton = driver.findElement(By.id("confirmbtn"));
-        confirmButton.click();
-
-        wait.until(ExpectedConditions.alertIsPresent());
-        Alert alert2 = driver.switchTo().alert();
-        Thread.sleep(2000);
-        alert2.dismiss();
+        practicePage.sendKeystoName();
+        practicePage.handleConfirmBtn();
+        assertTrue(practicePage.isAlertHandled());
     }
 
     //  7. Write a test to verify if the price of the course 'Master Selenium Automation in simple Python Language' is 35.
     @Test
     public void webTable() {
-        var table = driver.findElement(By.xpath("//table[@name='courses']"));
-        var rows = table.findElements(By.tagName("tr"));
-
-        String coursePrice = null;
-
-        for (var row : rows) {
-            var cells = row.findElements(By.tagName("td"));
-            if (cells.size() > 0 && "Master Selenium Automation in simple Python Language".equals(cells.get(1).getText())) {
-                coursePrice = cells.get(2).getText(); // Assuming price is in the third column
-                break;
-            }
-        }
-        assertEquals("35", coursePrice, "Expected price to be '35', but got '" + coursePrice + "'");
+        assertTrue(practicePage.isCoursePriceCorrect("Master Selenium Automation in simple Python Language", 35), "It is not 35");
     }
 
     //  8. Write a test to sum all the amounts. Verify if the total matches with the 'Total Amount Collected' value.
     @Test
     public void totalAmount() {
-        var table = driver.findElement(By.xpath("//div[@class='tableFixHead']/table[@id='product']/tbody"));
-        var rows =table.findElements(By.tagName("tr"));
-        int sum = 0;
-        for(var row:rows) {
-            var cells = row.findElements(By.tagName("td"));
-            sum +=Integer.parseInt(cells.get(3).getText());
-        }
-        String totalS = driver.findElement(By.className("totalAmount")).getText();
-        int total = Integer.parseInt(totalS.replaceAll("[^0-9]", ""));
-        assertEquals(sum, total, "The sum is '"+sum+"' but the total amount is '"+total+"'");
+        int sum = practicePage.sumAllAmounts();
+        System.out.println(sum);
+        int totalS = practicePage.getTotalAmount();
+        System.out.println(totalS);
+        assertEquals(sum, totalS, "The sum is '"+sum+"' but the total amount is '"+totalS+"'");
     }
 
     //  9. Hover the Mouse Hover button (DO NOT CLICK) and select Reload.
     @Test
-    public void mouseHover() throws InterruptedException {
+    public void mouseHover() {
         String initialUrl = driver.getCurrentUrl();
-        WebElement button = driver.findElement(By.id("mousehover"));
-        Actions actions = new Actions(driver);
-        actions.moveToElement(button).perform();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Reload")));
-        WebElement reload = driver.findElement(By.linkText("Reload"));
-        Thread.sleep(3000);
-        reload.click();
-        String newUrl = driver.getCurrentUrl();
-        assertEquals(initialUrl, newUrl, "The page did not reload");
-        Thread.sleep(2000);
+        practicePage.hoverAndClickReload();
+        assertTrue(practicePage.checkIfPageReloaded(initialUrl), "The page did not reload");
     }
 }
